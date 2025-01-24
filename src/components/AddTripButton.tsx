@@ -9,7 +9,7 @@ export function AddTripButton({ onClick }: AddTripButtonProps) {
   return (
     <Button 
       onClick={onClick}
-      className="w-full h-[200px] border-2 border-dashed bg-muted hover:bg-muted/80"
+      className="w-full h-[200px] border-2 border-primary border-dashed bg-background hover:bg-accent/50"
     >
       <Plus className="mr-2 h-5 w-5" />
       Add New Trip
