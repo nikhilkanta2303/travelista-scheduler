@@ -4,6 +4,7 @@ import { TripCard } from "@/components/TripCard";
 import { AddTripButton } from "@/components/AddTripButton";
 import { useToast } from "@/hooks/use-toast";
 import { AddTripDialog } from "@/components/AddTripDialog";
+import { TripDetailsDialog } from "@/components/TripDetailsDialog";
 import { format } from "date-fns";
 
 interface Trip {
@@ -30,6 +31,8 @@ const Index = () => {
     }
   ]);
   const [isAddTripOpen, setIsAddTripOpen] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [isTripDetailsOpen, setIsTripDetailsOpen] = useState(false);
 
   const handleAddTrip = (data: {
     title: string;
@@ -53,10 +56,16 @@ const Index = () => {
     });
   };
 
-  const handleTripClick = (tripId: string) => {
+  const handleTripClick = (trip: Trip) => {
+    setSelectedTrip(trip);
+    setIsTripDetailsOpen(true);
+  };
+
+  const handleDeleteTrip = (tripId: string) => {
+    setTrips(trips.filter((trip) => trip.id !== tripId));
     toast({
-      title: "Coming Soon",
-      description: "Trip details will be available in the next update!",
+      title: "Success",
+      description: "Trip has been deleted!",
     });
   };
 
@@ -72,7 +81,7 @@ const Index = () => {
               title={trip.title}
               destination={trip.destination}
               dates={trip.dates}
-              onClick={() => handleTripClick(trip.id)}
+              onClick={() => handleTripClick(trip)}
             />
           ))}
           <AddTripButton onClick={() => setIsAddTripOpen(true)} />
@@ -82,6 +91,12 @@ const Index = () => {
         open={isAddTripOpen}
         onOpenChange={setIsAddTripOpen}
         onSubmit={handleAddTrip}
+      />
+      <TripDetailsDialog
+        open={isTripDetailsOpen}
+        onOpenChange={setIsTripDetailsOpen}
+        trip={selectedTrip}
+        onDelete={handleDeleteTrip}
       />
     </div>
   );
