@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { TripCard } from "@/components/TripCard";
 import { AddTripButton } from "@/components/AddTripButton";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { AddTripDialog } from "@/components/AddTripDialog";
+import { format } from "date-fns";
 
 interface Trip {
   id: string;
@@ -27,11 +29,27 @@ const Index = () => {
       dates: "Aug 5 - Aug 7, 2024"
     }
   ]);
+  const [isAddTripOpen, setIsAddTripOpen] = useState(false);
 
-  const handleAddTrip = () => {
+  const handleAddTrip = (data: {
+    title: string;
+    destination: string;
+    startDate: string;
+    endDate: string;
+  }) => {
+    const newTrip: Trip = {
+      id: (trips.length + 1).toString(),
+      title: data.title,
+      destination: data.destination,
+      dates: `${format(new Date(data.startDate), "MMM d")} - ${format(
+        new Date(data.endDate),
+        "MMM d, yyyy"
+      )}`,
+    };
+    setTrips([...trips, newTrip]);
     toast({
-      title: "Coming Soon",
-      description: "Trip creation will be available in the next update!",
+      title: "Success",
+      description: "Your trip has been created!",
     });
   };
 
@@ -57,9 +75,14 @@ const Index = () => {
               onClick={() => handleTripClick(trip.id)}
             />
           ))}
-          <AddTripButton onClick={handleAddTrip} />
+          <AddTripButton onClick={() => setIsAddTripOpen(true)} />
         </div>
       </main>
+      <AddTripDialog
+        open={isAddTripOpen}
+        onOpenChange={setIsAddTripOpen}
+        onSubmit={handleAddTrip}
+      />
     </div>
   );
 };
